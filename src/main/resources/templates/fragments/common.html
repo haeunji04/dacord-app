@@ -18,16 +18,16 @@
 	<link rel="icon" href="/docs/5.2/assets/img/favicons/favicon.ico">
   	
   	<!-- context root로 수정 -->
-  	<link rel="stylesheet" th:href="@{/index.css}"/>
+  	<link rel="stylesheet" href="index.css" th:href="@{/index.css}"/>
 </head>
 <body>
-	<div th:fragment="menu">
+	<div th:fragment="menu(menu)">
 		<nav class="py-2 bg-light border-bottom">
 			<div class="container d-flex flex-wrap">
 				<ul class="nav me-auto">
-					<li class="nav-item"><a href="#" class="nav-link link-dark px-2 active" aria-current="page">Home</a>
+					<li class="nav-item"><a href="#" th:href="@{/}" class="nav-link link-dark px-2" th:classappend="${menu} == 'home' ? 'active'">Home</a>
 					</li>
-					<li class="nav-item"><a href="#" class="nav-link link-dark px-2">Album</a></li>
+					<li class="nav-item"><a href="#" th:href="@{/album/list}" class="nav-link link-dark px-2" th:classappend="${menu} == 'album' ? 'active'" >Album</a></li>
 				</ul>
 				<ul class="nav">
 					<li class="nav-item"><a href="#" class="nav-link link-dark px-2">Login</a></li>
