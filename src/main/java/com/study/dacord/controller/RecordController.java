@@ -8,21 +8,26 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.study.dacord.model.Album;
-import com.study.dacord.repository.AlbumRepository;
+import com.study.dacord.model.Record;
+import com.study.dacord.repository.RecordRepository;
 
 @Controller
-@RequestMapping("/album")
-public class AlbumController {
+@RequestMapping("/record")
+public class RecordController {
 	
 	@Autowired
-	private AlbumRepository albumRepository;
+	private RecordRepository recordRepository;
 	
 	@GetMapping("/list")
 	public String list(Model model) {
-		List<Album> albums = albumRepository.findAll();
-		model.addAttribute("albums", albums);
+		List<Record> records = recordRepository.findAll();
+		model.addAttribute("records", records);
 		
-		return "album/list";
+		return "record/list";
+	}
+	
+	@GetMapping("/form")
+	public String list() {
+		return "record/form";
 	}
 }
