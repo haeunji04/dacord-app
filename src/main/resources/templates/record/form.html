@@ -19,18 +19,21 @@
   
   <div class="mx-auto my-2" style="width: 80%">
 
-    <div class="mb-3">
-      <label for="exampleFormControlInput1" class="form-label">제목</label>
-      <input type="email" class="form-control" id="exampleFormControlInput1">
-    </div>
-    <div class="mb-3">
-      <label for="exampleFormControlTextarea1" class="form-label">내용</label>
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-    </div>
-
-    <div class="text-end">
-      <button type="button" class="btn btn-primary">쓰기</button>
-    </div>
+	<form action="" th:action="@{/record/form}" th:object="${record}" method="post">
+	    <div class="mb-3">
+	      <label for="title" class="form-label">제목</label>
+	      <input type="text" class="form-control" th:field="*{title}">
+	    </div>
+	    <div class="mb-3">
+	      <label for="content" class="form-label">내용</label>
+	      <textarea class="form-control" th:field="*{content}" rows="3"></textarea>
+	    </div>
+	
+	    <div class="text-end">
+	      <a th:href="@{/record/list}" class="btn btn-secondary my-2"> 취소 </a>
+	      <button type="submit" class="btn btn-primary">작성</button>
+	    </div>
+	</form>
   </div>
 </main>
 
