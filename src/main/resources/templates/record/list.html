@@ -35,7 +35,7 @@
       <tbody>
         <tr th:each="record : ${records}">
           <th th:text="${record.id}"></th>
-          <td th:text="${record.title}"></td>
+          <td><a th:href="@{/record/form(id=${record.id})}" th:text="${record.title}"></a></td>
           <td>관리자</td>
           <td>2022-11-06</td>
         </tr>
