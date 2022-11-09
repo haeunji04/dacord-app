@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.study.dacord.model.Record;
 import com.study.dacord.repository.RecordRepository;
+import com.study.dacord.validator.RecordValidator;
 
 @Controller
 @RequestMapping("/record")
@@ -22,6 +23,9 @@ public class RecordController {
 	
 	@Autowired
 	private RecordRepository recordRepository;
+	
+	@Autowired
+	private RecordValidator recordValidator;
 	
 	@GetMapping("/list")
 	public String list(Model model) {
@@ -46,6 +50,7 @@ public class RecordController {
 	
 	@PostMapping("/form")
 	public String formSubmit(@Valid Record record, BindingResult bindingResult) {
+		recordValidator.validate(record, bindingResult);
 		
 		if (bindingResult.hasErrors()) {
 			return "record/form";
