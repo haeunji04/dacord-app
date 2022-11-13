@@ -29,8 +29,10 @@ public class RecordController {
 	private RecordValidator recordValidator;
 	
 	@GetMapping("/list")
-	public String list(Model model, @PageableDefault(size = 2) Pageable pageable) {
-		Page<Record> records = recordRepository.findAll(pageable);
+	public String list(Model model, @PageableDefault(size = 2) Pageable pageable, 
+					   @RequestParam(required=false, defaultValue="") String searchText) {
+//		Page<Record> records = recordRepository.findAll(pageable);
+		Page<Record> records = recordRepository.findByTitleContainingOrContentContaining(searchText, searchText, pageable);
 		int startPage = Math.max(1, records.getPageable().getPageNumber() - 4);
 		int endPage = Math.min(records.getTotalPages(), records.getPageable().getPageNumber() + 4);
 		model.addAttribute("startPage", startPage);

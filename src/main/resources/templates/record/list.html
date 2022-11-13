@@ -1,83 +1,99 @@
-
 <!doctype html>
 <html lang="en">
-  <head th:replace="fragments/common :: head('Record')" />
-  </head>
+
+<head th:replace="fragments/common :: head('Record')" />
+</head>
+
 <body>
   <div th:replace="fragments/common :: symbol" />
   <div th:replace="fragments/common :: menu('record')" />
 
-<main>
+  <main>
 
-  <section class="py-5 text-center container">
-    <div class="row py-lg-5">
-      <div class="col-lg-6 col-md-8 mx-auto">
-        <h1 class="fw-light"> Record </h1>
-        <p>
-          <a th:href="@{/record/form}"class="btn btn-primary my-2"> 작성하기 </a>
-          <a href="#" class="btn btn-secondary my-2">Secondary action</a>
-        </p>
+    <section class="py-5 text-center container">
+      <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+          <h1 class="fw-light"> Record </h1>
+          <p>
+            <a th:href="@{/record/form}" class="btn btn-primary my-2"> 작성하기 </a>
+            <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto my-2" style="width: 80%">
+      <div class="text-muted"> 총 건수 : <span th:text="${records.totalElements}"></span> </div>
+      <form class="row g-3 d-flex justify-content-end" method="GET" th:action="@{/record/list}">
+        <div class="col-auto">
+          <label for="searchText" class="visually-hidden">검색</label>
+          <input type="text" class="form-control" id="searchText" name="searchText" th:value="${param.searchText}">
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-outline-primary mb-3">검색</button>
+        </div>
+      </form>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성자</th>
+            <th scope="col">날짜</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="record : ${records}">
+            <th th:text="${record.id}"></th>
+            <td><a th:href="@{/record/form(id=${record.id})}" th:text="${record.title}"></a></td>
+            <td>관리자</td>
+            <td>2022-11-06</td>
+          </tr>
+        </tbody>
+      </table>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" th:classappend="${1 == records.pageable.pageNumber + 1} ? 'disabled'">
+            <a class="page-link" href="#" th:href="@{/record/list(page=${records.pageable.pageNumber - 1},searchText=${param.searchText})}"
+              aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item" th:each="i: ${#numbers.sequence(startPage, endPage)}"
+            th:classappend="${i == records.pageable.pageNumber + 1} ? 'disabled'">
+            <a class="page-link" href="#" th:href="@{/record/list(page=${i - 1},searchText=${param.searchText})}" th:text="${i}"></a>
+          </li>
+          <li class="page-item" th:classappend="${records.totalPages == records.pageable.pageNumber + 1} ? 'disabled'">
+            <a class="page-link" th:href="@{/records/list(page=${records.pageable.pageNumber + 1},searchText=${param.searchText})}" href="#"
+              aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="text-end">
+        <button type="button" class="btn btn-primary">쓰기</button>
       </div>
     </div>
-  </section>
-  
-  <div class="mx-auto my-2" style="width: 80%">
-    <div class="text-muted"> 총 건수 : <span th:text="${records.totalElements}"></span> </div>
-      <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">번호</th>
-          <th scope="col">제목</th>
-          <th scope="col">작성자</th>
-          <th scope="col">날짜</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="record : ${records}">
-          <th th:text="${record.id}"></th>
-          <td><a th:href="@{/record/form(id=${record.id})}" th:text="${record.title}"></a></td>
-          <td>관리자</td>
-          <td>2022-11-06</td>
-        </tr>
-      </tbody>
-    </table>
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="page-item" th:each="i: ${#numbers.sequence(startPage, endPage)}"
-            th:classappend="${i == records.pageable.pageNumber + 1} ? 'disabled'">
-          <a class="page-link" href="#" th:text="${i}"></a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-    <div class="text-end">
-      <button type="button" class="btn btn-primary">쓰기</button>
+  </main>
+
+  <footer class="text-muted py-5">
+    <div class="container">
+      <p class="float-end mb-1">
+        <a href="#">Back to top</a>
+      </p>
+      <p class="mb-1">Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
+      <p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a
+          href="/docs/5.2/getting-started/introduction/">getting started guide</a>.</p>
     </div>
-  </div>
-</main>
-
-<footer class="text-muted py-5">
-  <div class="container">
-    <p class="float-end mb-1">
-      <a href="#">Back to top</a>
-    </p>
-    <p class="mb-1">Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
-    <p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a href="/docs/5.2/getting-started/introduction/">getting started guide</a>.</p>
-  </div>
-</footer>
+  </footer>
 
 
-    <script src="/docs/5.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+  <script src="/docs/5.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script>
 
-      
-  </body>
+
+</body>
+
 </html>
