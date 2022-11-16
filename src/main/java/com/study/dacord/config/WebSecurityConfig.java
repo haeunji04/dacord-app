@@ -1,20 +1,24 @@
 package com.study.dacord.config;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 @EnableWebMvc
 public class WebSecurityConfig {
 
+	@Autowired
+	private DataSource dataSource;
+	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
@@ -29,6 +33,43 @@ public class WebSecurityConfig {
 			.logout((logout) -> logout.permitAll());
 
 		return http.build();
+	}
+	
+	/**
+	 * Authentication 로그인
+	 * Authorization  권한
+	 * 
+	 * < 노트 >
+	 * @OneToOne 
+	 * ex) user - user_detail
+	 * 
+	 * @OneToMany
+	 * ex) user - board
+	 * 
+	 * @ManyToOne
+	 * ex) board - user
+	 * 
+	 * @ManyToMany
+	 * ex) user - role
+	 */
+	
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) 
+			throws Exception {
+	    auth.jdbcAuthentication()
+	      .dataSource(dataSource)
+	      .passwordEncoder(passwordEncoder())
+	      .usersByUsernameQuery("select username,password,enabled "
+	        + "from user "
+	        + "where username = ?")
+	      .authoritiesByUsernameQuery("select username,authority "
+	        + "from authorities "
+	        + "where email = ?");
+	}	
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+	    return new BCryptPasswordEncoder();
 	}
 
 }
