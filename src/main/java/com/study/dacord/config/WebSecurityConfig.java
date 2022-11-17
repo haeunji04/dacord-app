@@ -7,32 +7,31 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@EnableWebMvc
-public class WebSecurityConfig {
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
 	private DataSource dataSource;
 	
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.authorizeHttpRequests((requests) -> requests
-				.antMatchers("/", "/home").permitAll()
+			.authorizeRequests()
+				.antMatchers("/", "/css/**").permitAll()
 				.anyRequest().authenticated()
-			)
-			.formLogin((form) -> form
+				.and()
+			.formLogin()
 				.loginPage("/login")
 				.permitAll()
-			)
-			.logout((logout) -> logout.permitAll());
-
-		return http.build();
+				.and()
+			.logout()
+				.permitAll();
 	}
 	
 	/**
@@ -63,7 +62,8 @@ public class WebSecurityConfig {
 	        + "from user "
 	        + "where username = ?")
 	      .authoritiesByUsernameQuery("select username,authority "
-	        + "from authorities "
+	        + "from user_role ur inner join user u on ur.user_id = u.id "
+	        + "inner join role r on ur.role_id = r.id "
 	        + "where email = ?");
 	}	
 	
